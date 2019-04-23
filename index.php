@@ -57,7 +57,7 @@ $dif_days = (strtotime(date("Y-m-d", $dif)) - strtotime("1970-01-01")) / 86400;
 
     <!-- トップヘッダ＾ -->
     <div id="container">
-        <a href="/">
+        <a href="index.php">
             <img id="top-logo" src="img/50x50_gray.svg">
         </a>
     </div>
