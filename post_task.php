@@ -2,9 +2,13 @@
 /*
  * TweetBox.php
  *
+ * (2019/04/23) Tomoyuki Nohara
  * (2016/06/01) Tomoyuki Nohara
  *
  */ 
+
+date_default_timezone_set('Asia/Tokyo');
+
 // セッション開始
 @session_start();
 
@@ -60,21 +64,30 @@ if ( isset($_SESSION['session_key']) && isset($_POST['session_key']) &&
     if ($_POST['action'] == 'reset'){
         // write code delete..
         $Model->reset();
+        $flush="リセットしました";
     } //reset
+
+    /*********************************
+     * test_add_data
+     ********************************/
+    if ($_POST['action'] == 'add_test'){
+        $Model->test_add_data(1000);
+
+    } //reset
+
 
 } else {
     // なにもしない
     $msg = "セッションキーが一致してません.";
 }
+
 // $msgをHTMLにコメントアウトで出力
 // htmlComment($msg);
 
 /*************************************************************************/
 /*　DBからデータの呼び出し */
 /*************************************************************************/
-$tweet_list = $Model->get_data(1000);
-// echo "res:::::::::::::::::";
-// var_dump($tweet_list);
+$tweet_list = $Model->get_data(10000);
 $tweet_number = count($tweet_list);
 
 /*************************************************************************/
@@ -100,7 +113,8 @@ $HTML_TEMPLATE = '
     <input type="hidden" value="'.$session_key.'" name="session_key">
     <input type="hidden" value="%1$s" name="id">
     <button id="submit_button" type="submit" name="action" value="delete">
-    <span class="glyphicon glyphicon-remove"></span></button>
+    <span class="glyphicon glyphicon-remove">
+    </span></button>
 </form>
 <!-- /Tweet%1$s -->
 ';
@@ -109,7 +123,8 @@ $HTML_TEMPLATE = '
 /* 格言集を取り出す */
 /*************************************************************************/
 require_once("php/Speache.php");
-$speaches = get_speaches();
+
+
 /*************************************************************************/
 /* PHP終了*/
 /*************************************************************************/

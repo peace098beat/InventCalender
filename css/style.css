@@ -1,9 +1,9 @@
 /*Webフォント*/
 @import url(http://fonts.googleapis.com/earlyaccess/notosansjapanese.css);
 *{
- font-family: 'Noto Sans Japanese', sans-serif;
-    /*font-weight: 100;*/
+    /*font-family: 'Noto Sans Japanese', sans-serif;*/
     font-weight: 200;
+    /*font-weight: 100;*/
     /*font-weight: 300;*/
     /*font-weight: 400;*/
     /*font-weight: 500;*/
@@ -30,11 +30,27 @@ body {
     border-style: none;
 }
 
+#notifi{
+    color: gray;
+    font-size:1em;
+}
+
 .tweet-form{
-    padding: 1px 2px;
+    /*padding: 1px 2px;*/
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-right: 2px;
+    padding-left: 7px;
+
     float:left;
+    
     border: solid 2px #C78E3A;
     border-radius: 3px;
+    
+    background-color: #f6f6f6;
+    
+    margin-right: 4px;
+    margin-bottom: 4px;
 }
 
 .spacer20{
@@ -94,3 +110,4 @@ body {
 .margin-btm20 {
     margin-bottom: 20px;
 }
+

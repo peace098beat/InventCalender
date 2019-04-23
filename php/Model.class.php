@@ -2,13 +2,16 @@
 /*
 	Model.class.php
  */
-/**
-* Model
-*/
+
+
+/* 環境設定 */
+date_default_timezone_set('Asia/Tokyo');
 
 define('DB_NAME', 'db_tweetbox');
 define('TBL_NAME', 'tbl_tweet');
 define('DEBUG_PRINT', false);
+define('DB_BAK_DIR', 'db.bak');
+
 
 
 function dbprint($s){
@@ -46,8 +49,21 @@ class Model
 	}
 
 	public  function reset(){
+		# バックアップを取る
+		
+
+		$file = DB_NAME.'.db';
+		$newfile = "db.bak/".DB_NAME.date("(Y-m-d_His)").'.db.bak';
+		@mkdir(dirname($newfile), 0755, false);
+
+		if (!copy($file, $newfile)) {
+		    echo "failed to copy $file...\n";
+		}
+
+
 		# テーブル削除
 		$this->pdo->exec("DROP TABLE IF EXISTS ".TBL_NAME);
+		
 		# テーブル作成
 		$this->pdo->exec("CREATE TABLE IF NOT EXISTS ".TBL_NAME."(
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -57,12 +73,19 @@ class Model
 			)");
 	}
 
+
 	public function add_data($data){
+		return $this->_add_data($data["message"]);
+	}
+
+
+
+	private function _add_data($message){
 		// 挿入（プリペアドステートメント）
 		$stmt = $this->pdo->prepare("
 			INSERT INTO ".TBL_NAME."(message) VALUES (?)
 			");
-		$ret = $stmt->execute([$data["message"],]);
+		$ret = $stmt->execute([$message, ]);
 		if (!$ret) {
 		    dbprint( "<!--error Model::add_data-->");
 		    return false;
@@ -70,20 +93,28 @@ class Model
 		return true;
 	}
 
+	# TEST
+	public function test_add_data($count){
+
+		for ($i=0; $i < $count; $i++) { 
+			$ret = $this->_add_data("dummy-mes-".$i);
+			if (!$ret) {
+		    	dbprint( "<!--error Model::test_add_data-->");
+			} 
+		}
+		
+	}
+
+
 	public function get_data($maxCount=20){
 		// 挿入（プリペアドステートメント）
-	    $stmt = $this->pdo->prepare("SELECT * FROM ".TBL_NAME." WHERE hidden=0 ORDER BY id DESC ");
+	    $stmt = $this->pdo->prepare("SELECT * FROM ".TBL_NAME." WHERE hidden=0 ORDER BY id ASC ");
 	    $ret = $stmt->execute();
 		if (!$ret) {
 		    dbprint("<!--error Model::get_data-->");
 		} 
 
 	    $result = $stmt->fetchAll();
-
-	 //    $result = [];
-		// for ($i=0; $i < count($r); $i++) { 
-		//     $result[] = $r[$i]['videoid'];
-		// }
 
 		if(count($result) > $maxCount){
 			$a = array_slice($result, 0, $maxCount);
@@ -94,10 +125,16 @@ class Model
 	}
 	
 	/**
-	 * [___delete_item description]
-	 * @param  [type] $id [description]
 	 */
-	public function ___delete_item($id){
+	public function delete_item($id){
+
+		// return $this->real_delete_item($id);
+		return $this->hide_item($id);
+	}
+
+	/**
+	 */
+	public function real_delete_item($id){
 		$stmt = $this->pdo->prepare("
 			DELETE FROM ".TBL_NAME." WHERE id=?
 			");
@@ -110,9 +147,8 @@ class Model
 	}
 
 	/**
-	 * [delete_item description]
 	 */
-	public function delete_item($id){
+	public function hide_item($id){
 		// Hidden
 		$stmt = $this->pdo->prepare("
 			UPDATE ".TBL_NAME." SET hidden = 1 WHERE id=?
@@ -126,86 +162,9 @@ class Model
 	}
 
 
-	public function addVideoID($videoid, $user='')
-	{
-		// 挿入（プリペアドステートメント）
-		$stmt = $this->pdo->prepare("INSERT INTO tbl_recomen(videoid, user) VALUES (?,?)");
-		$ret = $stmt->execute([$videoid, $user]);
-		if (!$ret) {
-		    dbprint("<!--error Model::addVideoID-->");
-		} 
-	}
-	public function getVideoIDs($maxCount=5)
-	{
-	    $stmt = $this->pdo->prepare("SELECT videoid FROM tbl_recomen ORDER BY id DESC");
-	    $ret = $stmt->execute();
-		if (!$ret) {
-		    dbprint("<!--error Model::getVideoIDs-->");
-		} 
-
-	    $r = $stmt->fetchAll();
-	    $result = [];
-		
-		for ($i=0; $i < count($r); $i++) { 
-		    # code...
-		    $result[] = $r[$i]['videoid'];
-		}
-
-		if(count($result) > $maxCount){
-			$a = array_slice($result, 0, $maxCount);
-			return $a;
-		}
-
-	    return $result;
-	}
 
 }
 
-/*
-以下サンプル
-try {
-
-    // 接続
-    $pdo = new PDO('sqlite:my_sqlite_db.db');
-
-    // SQL実行時にもエラーの代わりに例外を投げるように設定
-    // (毎回if文を書く必要がなくなる)
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // デフォルトのフェッチモードを連想配列形式に設定 
-    // (毎回PDO::FETCH_ASSOCを指定する必要が無くなる)
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-    // テーブル作成
-    $pdo->exec("CREATE TABLE IF NOT EXISTS tbl_recomen(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        videoid VARCHAR(15),
-        user VARCHAR(10),
-        plycnt INTEGER
-    )");
-
-    // 挿入（プリペアドステートメント）
-    $stmt = $pdo->prepare("INSERT INTO tbl_recomen(videoid, user) VALUES (?,?)");
-    foreach ([['OwWT43Eb3IM', 'fifi'], ['OwWT43Eb3IM', 'obata']] as $params) {
-        $stmt->execute($params);
-    }
-
-    // 選択 (プリペアドステートメント)
-    // $stmt = $pdo->prepare("SELECT videoid FROM tbl_recomen ORDER BY id DESC");
-    $stmt = $pdo->prepare("SELECT videoid FROM tbl_recomen");
-    $stmt->execute();
-    $r2 = $stmt->fetchAll();
-
-    // 結果を確認
-    var_dump($r2);
-
-    // 接続を閉じる
-    $pdo = null;
-
-} catch (Exception $e) {
-    echo $e->getMessage() . PHP_EOL;
-}
-*/
 
 
 

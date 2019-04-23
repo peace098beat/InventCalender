@@ -18,7 +18,10 @@ function htmlComment($str=''){
  */    
 function flushrc($s)
 {
-	// echo "<p class='bg-info'>".$s."</p>";
+	if($s != ""){
+		echo "<p class='bg-info'>".$s."</p>";
+	}
+	
 	// echo "<p class='bg-success'>".$s."</p>";
 	// echo "<p >".$s."</p>";
 }
