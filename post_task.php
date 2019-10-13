@@ -13,9 +13,11 @@ date_default_timezone_set('Asia/Tokyo');
 @session_start();
 
 /*************************************************************************/
-// Modleクラスのインポート
+// Modelクラスのインポート
 require_once("php/Model.class.php");
 require_once("php/util.php");
+
+// LineBotモジュールをインポート
 require_once("php/LineBot.php");
 
 // DBクラスの生成

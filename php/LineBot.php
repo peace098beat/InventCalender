@@ -14,7 +14,7 @@
 date_default_timezone_set('Asia/Tokyo');
 
 define('LINE_API_URL'  ,'https://notify-api.line.me/api/notify');
-define('LINE_API_TOKEN','FggmK1f9yATEimmaOJFyhVGFxjlATq5NNEIWZv35V89fifi');
+define('LINE_API_TOKEN','FggmK1f9yATEimmaOJFyhVGFxjlATq5NNEIWZv35V89');
 
 function line_post_message($message){
 
