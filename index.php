@@ -1,7 +1,7 @@
 <?php
 /*
  * index.php
- *
+ * require : PHP5
  * (2019/04/23) Tomoyuki Nohara
  *
  */ 
@@ -19,8 +19,8 @@ define('START_DAY', '2019/05/01');
 require_once("post_task.php");
 
 // 経過日数を計算 (おまじない)
-$from = strtotime(START_DAY." 00:00:00"); // 2016年元旦 6時
-$to   = time("Y/m/d H:i:s"); // 2017年元旦 15時
+$from = strtotime(START_DAY." 00:00:00"); // 開始日時
+$to   = time("Y/m/d H:i:s"); // 現在時刻
 $dif = $to - $from;
 $dif_days = (strtotime(date("Y-m-d", $dif)) - strtotime("1970-01-01")) / 86400;
 
