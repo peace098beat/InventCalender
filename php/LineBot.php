@@ -3,11 +3,13 @@
     LineBot.php
     Line Notifyを使ってメッセージを送信
 
+    require : PHP5
+
     参考
         LINE notify を使ってみる https://qiita.com/iitenkida7/items/576a8226ba6584864d95
 
     @T.Nohara 2019
- */
+*/
 
 
 /* 環境設定 */

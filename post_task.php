@@ -1,7 +1,9 @@
 <?php
 /*
  * TweetBox.php
- *
+ * 
+ * require : PHP5
+ * 
  * (2019/04/23) Tomoyuki Nohara
  * (2016/06/01) Tomoyuki Nohara
  *
