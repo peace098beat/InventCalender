@@ -40,7 +40,7 @@ function line_post_message($message){
 }
 
 # --- sample ---
-$b_res = line_post_message('<テスト投稿>');
-if(! $b_res){
-    print("faild \n");
-} 
+// $b_res = line_post_message('<テスト投稿>');
+// if(! $b_res){
+//     print("faild \n");
+// }
