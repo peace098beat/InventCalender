@@ -16,6 +16,7 @@ date_default_timezone_set('Asia/Tokyo');
 // Modleクラスのインポート
 require_once("php/Model.class.php");
 require_once("php/util.php");
+require_once("php/LineBot.php");
 
 // DBクラスの生成
 $Model = new Model();
@@ -42,6 +43,12 @@ if ( isset($_SESSION['session_key']) && isset($_POST['session_key']) &&
             $res = $Model->add_data($hash );
             if($res){
                 htmlComment("Sucess DB Save ::".$tweet_msg);
+
+                # Linebotで送信
+                $res = line_post_message($tweet_msg);
+                if(!$res){
+                    flushrc("Error!! line_post_message().");
+                }
             }
         }
     } //追加
